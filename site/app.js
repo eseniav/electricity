@@ -76,13 +76,31 @@ const requestsData = requests.map(req => {
 res.render('requests', { requests: requestsData });
 });
 
-// Запуск сервера и проверка подключения к БД
+// Функция для повторных попыток подключения к БД
+async function connectWithRetry(retries = 10, delay = 3000) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            await sequelize.authenticate();
+            console.log('Подключение к базе данных успешно');
+            return;
+        } catch (err) {
+            console.error(`Ошибка подключения к базе данных (попытка ${i + 1}):`, err.message);
+            if (i < retries - 1) {
+                await new Promise(res => setTimeout(res, delay));
+            } else {
+                throw err;
+            }
+        }
+    }
+}
+
+// Запуск сервера только после успешного подключения к БД
 const PORT = process.env.PORT || 3000;
-sequelize.authenticate()
+connectWithRetry()
 .then(() => {
-    console.log('Подключение к базе данных успешно');
     app.listen(PORT, () => console.log(`Сервер запущен на порту ${PORT}`));
 })
 .catch(err => {
-    console.error('Ошибка подключения к базе данных:', err);
+    console.error('Не удалось подключиться к базе данных. Завершение работы.');
+    process.exit(1);
 });
