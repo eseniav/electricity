@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>Проекты</title>
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<header>
+    <h1>Проекты</h1>
+    <nav>
+    <a href="/">Проекты</a>
+    <a href="/requests">Заявки</a>
+    </nav>
+</header>
+
+<main>
+    <div id="projects-list" class="grid-container">
+    <% if (projects.length === 0) { %>
+        <p>Проекты не найдены.</p>
+    <% } else { %>
+        <% projects.forEach(project => { %>
+        <div class="project-item">
+            <h2><a href="/projects/<%= project.idProekty %>"><%= project.NazvaniePr %></a></h2>
+            <p>Номер проекта: <%= project.NomerPr %></p>
+        </div>
+        <% }) %>
+    <% } %>
+    </div>
+</main>
+
+<footer>
+    <p>Система управления проектами © 2025</p>
+</footer>
+</body>
+</html>

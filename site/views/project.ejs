@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>Детали проекта: <%= project.NazvaniePr %></title>
+<link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+<header>
+    <h1 id="project-title"><%= project.NazvaniePr %></h1>
+    <nav>
+    <a href="/">Назад к проектам</a>
+    <a href="/requests">Заявки</a>
+    </nav>
+</header>
+
+<main>
+    <section id="project-info">
+    <h2>Основная информация</h2>
+    <div class="info-grid">
+        <div>Номер проекта:</div>
+        <div><%= project.NomerPr %></div>
+        <div>Название:</div>
+        <div><%= project.NazvaniePr %></div>
+    </div>
+    </section>
+
+    <section id="equipment-section">
+    <h2>Оборудование</h2>
+    <table id="equipment-table">
+        <thead>
+        <tr>
+            <th>Тип</th>
+            <th>Серийный номер</th>
+            <th>Темп. воздуха</th>
+            <th>Темп. воды</th>
+            <th>Ток</th>
+            <th>Напряжение</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% if (equipment.length === 0) { %>
+            <tr><td colspan="6">Оборудование не найдено</td></tr>
+        <% } else { %>
+            <% equipment.forEach(eq => { %>
+            <tr>
+                <td><%= eq.TipySmejnogoOborudovaniya.NazvanieTipy %></td>
+                <td><%= eq.SeriinyNomerSmejObor %></td>
+                <td><%= eq.TemperaturaVozduhaSmejObor || '-' %></td>
+                <td><%= eq.TemperaturaVodySmejObor || '-' %></td>
+                <td><%= eq.TokiSmejObor || '-' %></td>
+                <td><%= eq.NapryajenieSmejObor || '-' %></td>
+            </tr>
+            <% }) %>
+        <% } %>
+        </tbody>
+    </table>
+    </section>
+
+    <section id="warehouse-section">
+    <h2>Склады</h2>
+    <% if (warehouses.length === 0) { %>
+        <p>Склады не найдены.</p>
+    <% } else { %>
+        <% warehouses.forEach(warehouse => { %>
+        <div class="warehouse">
+            <h3><%= warehouse.Raspolojenie %></h3>
+            <% if (warehouse.Yacheikis.length === 0) { %>
+            <p>Ячейки отсутствуют</p>
+            <% } else { %>
+            <ul>
+                <% warehouse.Yacheikis.forEach(cell => { %>
+                <% if(cell.SmejnieOborudovaniya && cell.SmejnieOborudovaniya.Proekty_idProekty === project.idProekty) { %>
+                    <li>
+                    Ячейка: <%= cell.SeriinyNomerYacheikji %>, Стоимость: <%= cell.Stoimost || 'не указана' %>, Оборудование: <%= cell.SmejnieOborudovaniya.SeriinyNomerSmejObor %>
+                    </li>
+                <% } %>
+                <% }) %>
+            </ul>
+            <% } %>
+        </div>
+        <% }) %>
+    <% } %>
+    </section>
+</main>
+
+<footer>
+    <p>Система управления проектами © 2025</p>
+</footer>
+</body>
+</html>
